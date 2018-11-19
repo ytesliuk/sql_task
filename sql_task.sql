@@ -4,7 +4,7 @@ SELECT COUNT(*) AS SUM FROM
 
 /*2.Написать запрос, показывающий список категорий новостей и количество новостей в каждой категории.*/
 SELECT nc_name, COUNT(n_id) FROM news 
-    RIGHT JOIN news_categories ON nc_id = n_category
+	RIGHT JOIN news_categories ON nc_id = n_category
 	GROUP BY nc_name;
 
 /*3. Написать запрос, показывающий список категорий обзоров и количество обзоров в каждой категории.*/
@@ -61,7 +61,7 @@ SELECT DISTINCT p_name FROM pages
 баннеры с картинкой (в поле `b_pic` не NULL).*/
 SELECT DISTINCT p_name FROM pages
 	INNER JOIN m2m_banners_pages ON pages.p_id = m2m_banners_pages.p_id
-    INNER JOIN banners ON m2m_banners_pages.b_id = banners.b_id AND NOT ISNULL(banners.b_pic);
+	INNER JOIN banners ON m2m_banners_pages.b_id = banners.b_id AND NOT ISNULL(banners.b_pic);
         
 /*13.Написать запрос, показывающий список публикаций (новостей и обзоров) за 2011-й
 год.*/
@@ -77,7 +77,7 @@ SELECT nc_name AS category FROM news_categories WHERE nc_id NOT IN (SELECT n_cat
 й год.*/
 SELECT n_header, n_dt FROM news 
 	INNER JOIN news_categories ON n_category = nc_id 
-    WHERE nc_name = "Логистика" 		AND (n_dt BETWEEN "2012-01-01" AND "2012-12-31");
+	WHERE nc_name = "Логистика" AND (n_dt BETWEEN "2012-01-01" AND "2012-12-31");
 
 /*16.Написать запрос, показывающий список годов, за которые есть новости, а также
 количество новостей за каждый из годов.*/
@@ -85,9 +85,9 @@ SELECT YEAR(n_dt) as "year", COUNT(*) from news GROUP BY YEAR(n_dt) ORDER BY YEA
 
 /*17.Написать запрос, показывающий URL и id таких баннеров, где для одного и того же
 URL есть несколько баннеров.*/
-SELECT banners.b_url, banners.b_id FROM banners INNER JOIN 
-	(SELECT b_url, b_id, COUNT(b_url) as "number" from banners GROUP BY b_url) as tamp 
-		ON banners.b_url = tamp.b_url AND tamp.number > 1;
+SELECT banners.b_url, banners.b_id FROM banners 
+	INNER JOIN (SELECT b_url, b_id, COUNT(b_url) as "number" from banners GROUP BY b_url) as tamp 
+	ON banners.b_url = tamp.b_url AND tamp.number > 1;
 
 
 /*18.Написать запрос, показывающий список непосредственных подстраниц страницы
@@ -107,7 +107,7 @@ SELECT b_id, b_url, (b_click / b_show) AS rate FROM banners WHERE NOT ISNULL(b_p
 новость это или обзор).*/
 SELECT n_header as header, n_dt AS "date" 
 	FROM (SELECT n_header, n_dt FROM news 
-		UNION SELECT r_header, r_dt FROM reviews) AS tamp 
+	UNION SELECT r_header, r_dt FROM reviews) AS tamp 
 	ORDER BY date LIMIT 1;
 
 /*21.Написать запрос, показывающий список баннеров, URL которых встречается в
@@ -143,8 +143,8 @@ SELECT b_id, b_url, b_text FROM banners WHERE b_text LIKE (CONCAT("%",SUBSTRING(
 SELECT p_name FROM pages 
 	INNER JOIN m2m_banners_pages ON pages.p_id = m2m_banners_pages.p_id 
 	INNER JOIN banners ON banners.b_id = m2m_banners_pages.b_id 
-			WHERE b_click / b_show = (
-									SELECT MAX(b_click / b_show) FROM banners);
+		WHERE b_click / b_show = (
+			SELECT MAX(b_click / b_show) FROM banners);
 
 /*26.Написать запрос, считающий среднее отношение кликов к показам по всем
 баннерам, которые были показаны хотя бы один раз.*/
@@ -166,9 +166,9 @@ WHERE banners.b_id = m2m_banners_pages.b_id
 GROUP BY m2m_banners_pages.b_id
 HAVING COUNT = (
 		SELECT COUNT(p_id) AS rep FROM m2m_banners_pages 
-			GROUP BY b_id
-            ORDER BY rep DESC 
-            LIMIT 1);
+		GROUP BY b_id
+		ORDER BY rep DESC 
+		LIMIT 1);
 
 /*30.Написать запрос, показывающий страницу(ы), на которой(ых) показано больше всего
 баннеров.*/
@@ -177,8 +177,8 @@ WHERE pages.p_id = m2m_banners_pages.p_id
 GROUP BY p_name
 HAVING COUNT = (
 		SELECT COUNT(b_id) AS rep FROM m2m_banners_pages 
-			GROUP BY p_id
-            ORDER BY rep DESC 
-            LIMIT 1);
+		GROUP BY p_id
+		ORDER BY rep DESC 
+		LIMIT 1);
 
 
